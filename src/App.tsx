@@ -13,8 +13,8 @@ function App() {
   const [authToken, setAuthToken] = useState(null)
   const [inputVal, setInputVal] = useState('')
 
-  const username = import.meta.env.VITE_USERNAME;
-  const password = import.meta.env.VITE_PASSWORD;
+  const username = import.meta.env.VITE_DYTE_USERNAME;
+  const password = import.meta.env.VITE_DYTE_PASSWORD;
 
   /*useEffect(() => {
     //startCall()
@@ -83,6 +83,32 @@ console.log('meeeting', meeting)
         console.log(responseData);
         //addPreset()
         addParticipant(responseData.data.id)
+      } else {
+        // Request failed
+        console.error('Error:', response.status);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  }
+
+  const getPresets = async () => {
+    const url = 'https://api.dyte.io/v2/presets';
+    const basicAuth = 'Basic ' + btoa(username + ':' + password);
+    try {
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': basicAuth // Add the Authorization header
+        },
+        //body: JSON.stringify(data) // Convert data to JSON string
+      });
+
+      if (response.ok) {
+        // Request was successful
+        const responseData = await response.json();
+        console.log(responseData);
       } else {
         // Request failed
         console.error('Error:', response.status);
@@ -290,6 +316,11 @@ console.log('meeeting', meeting)
 
   }
   console.log(navigator.userAgent)
+
+  useEffect(() => {
+    getPresets()
+  }, [])
+
 //console.log(navigator.userAgent.includes('Edg'))
   // By default this component will cover the entire viewport.
   // To avoid that and to make it fill a parent container, pass the prop:
